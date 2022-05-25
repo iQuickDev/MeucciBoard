@@ -24,5 +24,6 @@ Questo progetto mira a creare uno spazio su cui disegnare per tutti gli studenti
 ### Test Team
 <ul>
   <li> VLAN (https://github.com/wlady06) </li>
+  <li> bottomSeppe (https://github.com/lupo-nasone) </li>
 </ul>
 
