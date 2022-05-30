@@ -1,34 +1,42 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, createVNode, render } from "vue";
 import { KinesisContainer, KinesisElement } from 'vue-kinesis'
 
 // @ts-ignore
 import LoginPanel from "../components/LoginPanel.vue";
 import PaintSplatter from "../components/PaintSplatter.vue";
 
-function shuffleDecorations()
-{
+const splatters = ref([])
+
+function shuffleDecorations() {
   let decorations = document.querySelectorAll(".decoration")
 
-  for (const decoration of decorations)
-  {
-    let x = Math.floor(Math.random() * (window.innerWidth - decoration.clientWidth))
-    let y = Math.floor(Math.random() * (window.innerHeight - decoration.clientHeight))
+  for (let i = 0; i < decorations.length; i++) {
+    let decoration = decorations[i]
+    let x = Math.floor(Math.random() * (window.innerWidth))
+    let y = Math.floor(Math.random() * (window.innerHeight))
+    console.log(x,y)
     decoration.style.left = x + "px"
-    decoration.style.top = y - 20 + "px"
+    decoration.style.top = y + "px"
   }
 }
 
-onMounted(shuffleDecorations)
+function addSplatters(count: number) {
+  for (let i = 0; i < count; i++) {
+    splatters.value.push(createVNode(PaintSplatter))
+  }
+}
+
+  onMounted(async () => {
+    await addSplatters(15)
+    shuffleDecorations()
+  })
 </script>
 
 <template>
   <kinesis-container>
     <main id="background">
-    <PaintSplatter class="decoration" :strength="20" type="depth"></PaintSplatter>
-    <PaintSplatter class="decoration" :strength="20" type="depth"></PaintSplatter>
-    <PaintSplatter class="decoration" :strength="20" type="depth"></PaintSplatter>
-    <PaintSplatter class="decoration" :strength="20" type="depth"></PaintSplatter>
+    <PaintSplatter class="decoration" v-for="splatter in splatters" :key="splatter"/>
       <LoginPanel class="panel"></LoginPanel>
       <kinesis-element :strength="20" type="depth">
         <span class="math decoration">ax² + bx + c = 0</span>
@@ -70,21 +78,17 @@ onMounted(shuffleDecorations)
   color: #00F;
 }
 
-.panel
-{
+.panel {
   z-index: 10;
 }
 
-.decoration
-{
+.decoration {
   position: absolute;
   z-index: 1;
 }
 
-@media (max-width: 600px)
-{
-  .decoration
-  {
+@media (max-width: 600px) {
+  .decoration {
     display: none;
   }
 }
